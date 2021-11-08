@@ -1,0 +1,188 @@
+{% extends '@bolt/_base/layout.html.twig' %}
+{% import '@bolt/_macro/_macro.html.twig' as macro %}
+
+{% trans_default_domain 'navigations_ui' %}
+
+{# The 'title' and 'shoulder' blocks are the main heading of the page. #}
+{% block shoulder %}
+    <a href="{{ path('bolt_eckinox_navigation_list') }}">Navigations</a>
+{% endblock shoulder %}
+
+{% block title %}
+    Edit navigation: {{ cleanName }}
+{% endblock %}
+
+{# This 'topsection' gets output _before_ the main form, allowing `dump()`, without breaking Vue #}
+{% block topsection %}
+    <style>
+        #navigation-edit-form { --submenu-total-indentation: 0em; }
+        #navigation-edit-form .menu { display: flex; flex-direction: column; padding-top: 10px; }
+        #navigation-edit-form .item { margin-top: 10px; }
+        #navigation-edit-form .item .submenu { padding-left: 2em; --submenu-total-indentation: 2em; }
+        #navigation-edit-form .item .submenu .submenu { --submenu-total-indentation: 4em; }
+        #navigation-edit-form .item .submenu .submenu .submenu { --submenu-total-indentation: 6em; }
+        #navigation-edit-form .item .submenu .submenu .submenu .submenu { --submenu-total-indentation: 8em; }
+        #navigation-edit-form .item .info { display: grid; padding: .5em .5em .5em .25em; grid-template-columns: calc(40ch - var(--submenu-total-indentation)) 1fr 2.5em; gap: 1em; background-color: var(--foreground); border: 1px solid var(--foreground-border); border-radius: 3px; }
+        #navigation-edit-form .item .info .label { padding: .25em .5em; font-weight: 700; border: 2px solid transparent; border-radius: 3px; outline: none; }
+        #navigation-edit-form .item .info .label:hover,
+        #navigation-edit-form .item .info .label:focus { background-color: var(--background); border-color: var(--foreground-border); }
+        #navigation-edit-form .item .info .label:focus { border-color: var(--primary); }
+        #navigation-edit-form .item .handle { display: flex; align-items: center; justify-content: center; color: #999; border-radius: 3px; cursor: grab; transition: all .15s ease; }
+        #navigation-edit-form .item .handle i { margin: 0; }
+        #navigation-edit-form .item .handle:hover { color: var(--primary); background-color: #d4e1ef; }
+        #navigation-edit-form .item.dragging-over > .submenu:empty { background-color: rgba(0,0,0,.06); }
+    </style>
+{% endblock %}
+
+{%- macro renderItemEntry(item, parentItem = null) -%}
+    <div class="item">
+        <div class="info">
+            <div class="label" contenteditable>{{ item.get("label")|default("Untitled") }}</div>
+            <div class="link-wrapper">
+                {{ item.get("link")|default("#") }}
+            </div>
+            <div class="handle">
+                <i class="fas fa-arrows-alt"></i>
+            </div>
+            <input type="hidden" name="label" value="{{ item.get("label") }}">
+            <input type="hidden" name="link" value="{{ item.get("link") }}">
+            <input type="hidden" name="class" value="{{ item.get("class") }}">
+        </div>
+        <div class="menu submenu">
+            {%- for child in item.get("submenu")|default([]) -%}
+                {{ _self.renderItemEntry(child, item) }}
+            {%- endfor -%}
+        </div>
+    </div>
+{%- endmacro -%}
+
+{% block main %}
+    <div>
+        <form id="navigation-edit-form">
+            <div class="menu">
+                {% for item in config.get("menu/" ~ menuName) %}
+                    {{ _self.renderItemEntry(item) }}
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        function initMenuSortable(menu) {
+            var sortable = new Sortable(menu, {
+                group: "menu",  // or { name: "...", pull: [true, false, 'clone', array], put: [true, false, array] }
+                sort: true,  // sorting inside list
+                animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
+                easing: "cubic-bezier(1, 0, 0, 1)", // Easing for animation. Defaults to null. See https://easings.net/ for examples.
+                handle: ".handle",  // Drag handle selector within list items
+                draggable: ".item",  // Specifies which items inside the element should be draggable
+
+
+                ghostClass: "sortable-ghost",  // Class name for the drop placeholder
+                chosenClass: "sortable-chosen",  // Class name for the chosen item
+                dragClass: "sortable-drag",  // Class name for the dragging item
+
+                direction: 'vertical', // Direction of Sortable (will be detected automatically if not given)
+
+                dragoverBubble: false,
+                removeCloneOnHide: true, // Remove the clone element when it is not showing, rather than just hiding it
+                emptyInsertThreshold: 2, // px, distance mouse must be from empty sortable to insert drag element into it
+
+                onEnd: function () {
+                    if (currentlyHoveredItem) {
+                        currentlyHoveredItem.classList.remove("dragging-over");
+                        currentlyHoveredItem = null;
+                    }
+                },
+                onUpdate: function (/**Event*/evt) {
+                    // same properties as onEnd
+                },
+            });
+        }
+
+        for (var menu of document.querySelectorAll(".menu")) {
+            initMenuSortable(menu);
+        }
+
+        let currentlyHoveredItem = null;
+        document.querySelector("#navigation-edit-form").addEventListener("dragover", function(e) {
+            const hoveredItem = e.target.closest(".item");
+
+            if (currentlyHoveredItem && currentlyHoveredItem != hoveredItem) {
+                currentlyHoveredItem.classList.remove("dragging-over");
+                currentlyHoveredItem = null;
+            }
+
+            if (hoveredItem) {
+                hoveredItem.classList.add("dragging-over");
+                currentlyHoveredItem = hoveredItem;
+            }
+        });
+    </script>
+    <script>
+        document.querySelector("#navigation-edit-form").addEventListener("input", function(e) {
+            if (!e.target.matches('.label')) {
+                return;
+            }
+
+            const item = e.target.closest('.item');
+            const input = item.querySelector('input[name="label"]');
+
+            input.value = e.target.textContent;
+        });
+    </script>
+    <script>
+        function buildNavigationConfigFromDom()
+        {
+            function buildConfigFromItem(item)
+            {
+                const itemConfig = {
+                    label: item.querySelector('input[name="label"]').value.trim(),
+                    link: item.querySelector('input[name="link"]').value.trim(),
+                    class: item.querySelector('input[name="class"]').value,
+                    submenu: []
+                };
+
+                const subMenu = item.querySelector(".submenu");
+                for (const subItem of subMenu.children) {
+                    itemConfig.submenu.push(buildConfigFromItem(subItem));
+                }
+
+                if (!itemConfig.submenu.length) {
+                    delete itemConfig.submenu;
+                }
+
+                if (!itemConfig.class.length) {
+                    delete itemConfig.class;
+                }
+
+                return itemConfig;
+            }
+
+            const menuConfig = [];
+            for (const firstLevelItem of document.querySelector("#navigation-edit-form > .menu").children) {
+                menuConfig.push(buildConfigFromItem(firstLevelItem));
+            }
+
+            return menuConfig;
+        }
+    </script>
+{% endblock %}
+
+{% block aside %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-fw fa-star"></i>
+            Primary Actions
+        </div>
+        <div class="card-body">
+            <div class="record-actions ">
+                <a href="{{ path('bolt_eckinox_navigation_list') }}" data-patience="virtue" name="save" class="btn btn-success">
+                    <i class="fas fa-fw fa-save mr-2"></i>
+                    Save changes
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

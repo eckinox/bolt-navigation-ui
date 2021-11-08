@@ -1,0 +1,13 @@
+### Platfom-specific files
+.DS_Store
+thumbs.db
+Vagrantfile
+.vagrant*
+.idea
+.vscode/*
+appveyor.yml
+
+### Local files
+vendor/
+composer.lock
+var/

@@ -1,0 +1,57 @@
+{% extends '@bolt/_base/layout.html.twig' %}
+{% import '@bolt/_macro/_macro.html.twig' as macro %}
+
+{% trans_default_domain 'navigations_ui' %}
+
+{# The 'title' and 'shoulder' blocks are the main heading of the page. #}
+{% block shoulder %}
+    Site management
+{% endblock shoulder %}
+
+{% block title %}
+    Manage your navigations
+{% endblock %}
+
+{% block vue_id 'editor' %}
+
+{# This 'topsection' gets output _before_ the main form, allowing `dump()`, without breaking Vue #}
+{% block topsection %}
+
+{% endblock %}
+
+{% block main %}
+    <div>
+        <form id="navigations-form">
+            <table class="table" id="navigation-list" style="background-color: #FFF;">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Identifier</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, cleanName in menus %}
+                        <tr>
+                            <td>
+                                <strong>{{ cleanName }}</strong>
+                            </td>
+                            <td>
+                                {{ name }}
+                            </td>
+                            <td>
+                                <a href="{{ path('bolt_eckinox_navigation_edit', { name: name }) }}" class="btn btn-primary" title="Edit navigation">
+                                    <i class="fas fa-edit mx-1"></i>
+                                    Edit navigation
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
+
+{% block aside %}
+{% endblock %}

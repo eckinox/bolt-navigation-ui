@@ -1,0 +1,23 @@
+{
+    "name": "eckinox/bolt-navigation-ui",
+    "description": "A Bolt 5 extension that provides a user-friendly interface to manage navigations, straight from the admin section.",
+    "type": "bolt-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Émile Perron",
+            "email": "contact@emileperron.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Eckinox\\BoltNavigationUI\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false,
+    "extra": {
+        "entrypoint": "Eckinox\\BoltNavigationUI\\Extension"
+    }
+}
