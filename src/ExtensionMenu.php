@@ -5,29 +5,33 @@ namespace Eckinox\BoltNavigationUI;
 use Bolt\Menu\ExtensionBackendMenuInterface;
 use Knp\Menu\MenuItem;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExtensionMenu implements ExtensionBackendMenuInterface
 {
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
+    private UrlGeneratorInterface $urlGenerator;
+    private TranslatorInterface $translator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->translator = $translator;
     }
 
     public function addItems(MenuItem $menu): void
     {
+        $extensionName = $this->translator->trans("extension_name", [], "navigations_ui");
+
         // This adds a new heading
-        $menu->addChild('Navigations Extension', [
+        $menu->addChild($extensionName, [
             'extras' => [
-                'name' => 'Navigations Extension',
+                'name' => $extensionName,
                 'type' => 'separator',
             ]
         ]);
 
         // This adds the link
-        $menu->addChild('Manage navigations', [
+        $menu->addChild($this->translator->trans("manage_navigations", [], "navigations_ui"), [
            'uri' => $this->urlGenerator->generate('bolt_eckinox_navigation_list'),
             'extras' => [
                 'icon' => 'fa-bars'

@@ -5,11 +5,11 @@
 
 {# The 'title' and 'shoulder' blocks are the main heading of the page. #}
 {% block shoulder %}
-    <a href="{{ path('bolt_eckinox_navigation_list') }}">Navigations</a>
+    <a href="{{ path('bolt_eckinox_navigation_list') }}">{% trans %}navigations{% endtrans %}</a>
 {% endblock shoulder %}
 
 {% block title %}
-    Edit navigation: {{ cleanName }}
+    {% trans with { "%name%": cleanName } %}editing_navigation{% endtrans %}
 {% endblock %}
 
 {# This 'topsection' gets output _before_ the main form, allowing `dump()`, without breaking Vue #}
@@ -164,7 +164,7 @@
             const labelEl = item.querySelector('.label');
             const label = labelEl.textContent || labelEl.getAttribute('data-content-title');
 
-            if (confirm(`Are you sure you want to remove the "${label}" link from your navigation?`)) {
+            if (confirm(`{% trans %}remove_item_confirmation{% endtrans %}`.replace('%item%', label))) {
                 item.remove();
             }
         });
@@ -211,17 +211,17 @@
     <div class="card mb-3">
         <div class="card-header">
             <i class="fas fa-fw fa-star"></i>
-            Primary Actions
+            {% trans %}primary_actions{% endtrans %}
         </div>
         <div class="card-body">
             <div class="record-actions">
                 <button type="button" name="add" class="btn btn-primary" id="add-navigation-item">
                     <i class="fas fa-fw fa-plus mr-2"></i>
-                    Add an element
+                    {% trans %}add_item{% endtrans %}
                 </button>
                 <button type="submit" data-patience="virtue" name="save" class="btn btn-success" id="save-navigation">
                     <i class="fas fa-fw fa-save mr-2"></i>
-                    Save changes
+                    {% trans %}save_changes{% endtrans %}
                 </button>
             </div>
         </div>
@@ -267,7 +267,7 @@
                 toast.setAttribute("data-delay", "6000");
                 toast.innerHTML = `
                     <div class="alert-${toastType} toast-header">
-                        <strong class="mr-auto">{{ 'flash_messages.notification'|trans }}</strong>
+                        <strong class="mr-auto">{% trans %}flash_messages.live_notification{% endtrans %}</strong>
                         <button class="ml-2 mb-1 close" aria-label="Close" data-dismiss="toast" type="button">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -287,9 +287,9 @@
                 <div class="navigation-insert-dialog-wrapper">
                     <div class="dialog">
                         <label class="dialog-title">
-                            Select a page to add
+                            {% trans %}select_page{% endtrans %}
                         </label>
-                        <input type="text" name="query" placeholder="Search or enter an URL" autocomplete="off">
+                        <input type="text" name="query" placeholder="{% trans %}search_page_placeholder{% endtrans %}" autocomplete="off">
                         <ol>
                         </ol>
                     </div>
@@ -322,7 +322,9 @@
                 const item = e.target.closest("li");
                 const pageTitle = item.getAttribute("data-title");
                 const pageUrl = item.getAttribute("data-url");
-                const navigationItemHtml = `
+                const newItem = document.createElement("div");
+                newItem.className = "item";
+                newItem.innerHTML = `
                     <div class="item">
                             <div class="info">
                                 <div class="handle">
@@ -344,7 +346,9 @@
                         </div>
                 `;
 
-                mainMenuElement.insertAdjacentHTML("beforeend", navigationItemHtml);
+                mainMenuElement.appendChild(newItem);
+                initMenuSortable(newItem.querySelector(".submenu"));
+
                 modalWrapper.remove();
             });
 
@@ -376,24 +380,13 @@
                             <li data-url="${record.url}" data-title="${record.title}">
                                 <div class="title">${record.title}</div>
                                 <div class="url">${record.typeLabel ? record.typeLabel + " - " : ""}${record.absoluteUrl}</div>
-                                <a href="#">Add to the navigation</a>
-                            </li>
-                        `;
-                    }
-
-                    if (/^https?:\/\/.+/.test(query)) {
-                        const temporaryTitle = query.replace(/^https?:\/\/(?:www.?\.)?(.+?)(?:\/.*)?$/, "$1");
-                        resultsHtml += `
-                            <li data-url="${query}" data-title="${temporaryTitle}">
-                                <div class="title">${temporaryTitle}</div>
-                                <div class="url">${query}</div>
-                                <a href="#">Add to the navigation</a>
+                                <a href="#">{% trans %}add_to_navigation{% endtrans %}</a>
                             </li>
                         `;
                     }
 
                     if (!resultsHtml) {
-                        resultsHtml += `<li class="empty-state">Sorry, we couldn't find any content for this search query.</li>`;
+                        resultsHtml += `<li class="empty-state">{% trans %}page_search_empty_state{% endtrans %}</li>`;
                     }
 
                     list.innerHTML = resultsHtml;
