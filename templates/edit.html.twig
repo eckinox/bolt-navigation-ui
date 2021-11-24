@@ -18,7 +18,7 @@
         #navigation-edit-form { --submenu-total-indentation: 0em; }
         #navigation-edit-form .menu { display: flex; flex-direction: column; padding-top: 10px; }
         #navigation-edit-form .item { margin-top: 10px; }
-        #navigation-edit-form .item .submenu { padding-left: 2em; --submenu-total-indentation: 2em; }
+        #navigation-edit-form .item .submenu { margin-left: 1em; padding-left: 1em; --submenu-total-indentation: 2em; }
         #navigation-edit-form .item .submenu .submenu { --submenu-total-indentation: 4em; }
         #navigation-edit-form .item .submenu .submenu .submenu { --submenu-total-indentation: 6em; }
         #navigation-edit-form .item .submenu .submenu .submenu .submenu { --submenu-total-indentation: 8em; }
@@ -121,6 +121,7 @@
                     // same properties as onEnd
                 },
             });
+            menu.sortable = sortable;
         }
 
         for (var menu of document.querySelectorAll(".menu")) {
@@ -325,28 +326,28 @@
                 const newItem = document.createElement("div");
                 newItem.className = "item";
                 newItem.innerHTML = `
-                    <div class="item">
-                            <div class="info">
-                                <div class="handle">
-                                    <i class="fas fa-arrows-alt"></i>
-                                </div>
-                                <div class="label" data-content-title="${pageTitle ? pageTitle : "-"}" contenteditable></div>
-                                <div class="link-wrapper">
-                                    <div class="title">${pageTitle ? pageTitle : "-"}</div>
-                                    <div class="url">${pageUrl}</div>
-                                </div>
-                                <button type="button" class="delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <input type="hidden" name="label" value="${pageTitle ? pageTitle : ""}">
-                                <input type="hidden" name="link" value="${pageUrl}">
-                                <input type="hidden" name="class" value="">
+                        <div class="info">
+                            <div class="handle">
+                                <i class="fas fa-arrows-alt"></i>
                             </div>
-                            <div class="menu submenu"></div>
+                            <div class="label" data-content-title="${pageTitle ? pageTitle : "-"}" contenteditable></div>
+                            <div class="link-wrapper">
+                                <div class="title">${pageTitle ? pageTitle : "-"}</div>
+                                <div class="url">${pageUrl}</div>
+                            </div>
+                            <button type="button" class="delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <input type="hidden" name="label" value="${pageTitle ? pageTitle : ""}">
+                            <input type="hidden" name="link" value="${pageUrl}">
+                            <input type="hidden" name="class" value="">
                         </div>
+                        <div class="menu submenu"></div>
                 `;
 
                 mainMenuElement.appendChild(newItem);
+                mainMenuElement.sortable.destroy();
+                initMenuSortable(mainMenuElement);
                 initMenuSortable(newItem.querySelector(".submenu"));
 
                 modalWrapper.remove();
