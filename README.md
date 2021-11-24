@@ -4,7 +4,7 @@ A Bolt CMS extension that adds a visual interface to update menus in Bolt's admi
 
 It allows end-users to update menus intuitively via a drag-and-drop interface, and to add links with a simple content search engine.
 
-[Usage example](!usage-example.gif)
+![Usage example](usage-example.gif)
 
 ---
 
