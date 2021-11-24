@@ -100,7 +100,7 @@ class NavigationContentSearch extends ExtensionController
          * @var Content $content
          */
         foreach ($recordsPagination->getCurrentPageResults() as $content) {
-            $locales = $content->getLocales() ?: [null];
+            $locales = $content->getLocales()->all() ?: [null];
 
             foreach ($locales as $locale) {
                 $results[] = $this->buildResultFromContent($content, $locale);
@@ -126,8 +126,7 @@ class NavigationContentSearch extends ExtensionController
                 continue;
             }
 
-
-            $locales = $contentType["locales"] ?: [null];
+            $locales = $contentType["locales"]->all() ?: [null];
 
             foreach ($locales as $locale) {
                 $url = $contentType["slug"];
@@ -220,8 +219,8 @@ class NavigationContentSearch extends ExtensionController
     {
         $mergedContentString = implode(" ", $contentStrings);
         $standardizedQuery = $this->slugger->slug(strtolower(trim($query)));
-        $standardizedName = $this->slugger->slug(strtolower(trim($mergedContentString)));
+        $standardizedContent = $this->slugger->slug(strtolower(trim($mergedContentString)));
 
-        return strpos($standardizedName, $standardizedQuery) !== false;
+        return $standardizedContent->containsAny($standardizedQuery);
     }
 }
