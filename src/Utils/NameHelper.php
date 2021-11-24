@@ -1,12 +1,10 @@
 <?php
 
-namespace Eckinox\BoltNavigationUI\Controller;
+namespace Eckinox\BoltNavigationUI\Utils;
 
-use Bolt\Extension\ExtensionController;
-
-class BaseNavigationController extends ExtensionController
+class NameHelper
 {
-    protected function makeNameHumanFriendly(string $name)
+    public function makeNameHumanFriendly(string $name)
     {
         // Space out camelCase words
         $name = preg_replace('/(?!^)[A-Z]{2,}(?=[A-Z][a-z])|[A-Z][a-z]/', ' $0', $name);

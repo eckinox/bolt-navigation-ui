@@ -3,18 +3,19 @@
 namespace Eckinox\BoltNavigationUI\Controller;
 
 use Bolt\Configuration\Config;
-use Eckinox\BoltNavigationUI\Controller\BaseNavigationController;
+use Bolt\Extension\ExtensionController;
+use Eckinox\BoltNavigationUI\Utils\NameHelper;
 use Symfony\Component\HttpFoundation\Response;
 
-class ListController extends BaseNavigationController
+class ListController extends ExtensionController
 {
-    public function list(Config $config): Response
+    public function list(Config $config, NameHelper $nameHelper): Response
     {
         $rawMenus = $config->get("menu");
         $menus = [];
 
         foreach ($rawMenus as $name => $items) {
-            $menus[$name] = $this->makeNameHumanFriendly($name);
+            $menus[$name] = $nameHelper->makeNameHumanFriendly($name);
         }
 
         return $this->render('@bolt-navigation-ui/index.html.twig', [

@@ -22,35 +22,57 @@
         #navigation-edit-form .item .submenu .submenu { --submenu-total-indentation: 4em; }
         #navigation-edit-form .item .submenu .submenu .submenu { --submenu-total-indentation: 6em; }
         #navigation-edit-form .item .submenu .submenu .submenu .submenu { --submenu-total-indentation: 8em; }
-        #navigation-edit-form .item .info { display: grid; padding: .5em .5em .5em .25em; grid-template-columns: calc(40ch - var(--submenu-total-indentation)) 1fr 2.5em; gap: 1em; background-color: var(--foreground); border: 1px solid var(--foreground-border); border-radius: 3px; }
-        #navigation-edit-form .item .info .label { padding: .25em .5em; font-weight: 700; border: 2px solid transparent; border-radius: 3px; outline: none; }
+        #navigation-edit-form .item .info { display: grid; padding: .5em .5em .5em .25em; grid-template-columns: 2.5em calc(40ch - var(--submenu-total-indentation)) 1fr 2.5em; gap: 1em; background-color: var(--foreground); border: 1px solid var(--foreground-border); border-radius: 3px; }
+        #navigation-edit-form .item .info .label { padding: .25em .5em; margin-left: -1em; font-weight: 700; border: 2px solid transparent; border-radius: 3px; outline: none; }
         #navigation-edit-form .item .info .label:hover,
         #navigation-edit-form .item .info .label:focus { background-color: var(--background); border-color: var(--foreground-border); }
         #navigation-edit-form .item .info .label:focus { border-color: var(--primary); }
+        #navigation-edit-form .item .info .label:empty:not(:focus)::before { content: attr(data-content-title); color: var(--shade); cursor: text; }
+        #navigation-edit-form .item .info .title { font-size: .85em; line-height: 1.25; }
+        #navigation-edit-form .item .info .url { font-size: .75em; line-height: 1.25; color: #999; }
         #navigation-edit-form .item .handle { display: flex; align-items: center; justify-content: center; color: #999; border-radius: 3px; cursor: grab; transition: all .15s ease; }
         #navigation-edit-form .item .handle i { margin: 0; }
         #navigation-edit-form .item .handle:hover { color: var(--primary); background-color: #d4e1ef; }
+        #navigation-edit-form .item .delete { display: flex; align-items: center; justify-content: center; color: #999; background-color: transparent; border: none; border-radius: 3px; cursor: pointer; transition: all .15s ease; }
+        #navigation-edit-form .item .delete i { margin: 0; }
+        #navigation-edit-form .item .delete:hover { color: white; background-color: #db2427; }
         #navigation-edit-form .item.dragging-over > .submenu:empty { background-color: rgba(0,0,0,.06); }
+
+        .navigation-insert-dialog-wrapper { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .35); z-index: 100; }
+        .navigation-insert-dialog-wrapper .dialog { width: 600px; max-width: 90%; padding: 2rem 2.25rem; background-color: var(--background); border-radius: 2px; box-shadow: 0 1rem 1rem rgb(0 0 0 / 5%); }
+        .navigation-insert-dialog-wrapper .dialog-title { display: block; font-size: 1.5rem; }
+        .navigation-insert-dialog-wrapper input { display: block; width: 100%; padding: .5rem .75rem; border: 1px solid var(--shade-light); }
+        .navigation-insert-dialog-wrapper ol { height: calc(70vh - 10rem); padding: 0; margin-top: 1rem; list-style: none; overflow: auto; }
+        .navigation-insert-dialog-wrapper li { padding: .5rem .75rem; margin-bottom: 1rem; background-color: white; border: 1px solid var(--shade-light); position: relative; }
+        .navigation-insert-dialog-wrapper li a { display: flex; padding-right: .75rem; justify-content: flex-end; align-items: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; font-weight: 700; color: #000; background-color: rgba(0, 0, 0, .1);  opacity: 0; user-select: none; transition: opacity .5s ease; }
+        .navigation-insert-dialog-wrapper li a:hover { opacity: 1; }
+        .navigation-insert-dialog-wrapper li .title { font-size: .95rem; font-weight: 600; line-height: 1.5; }
+        .navigation-insert-dialog-wrapper li .url { font-size: .8rem; line-height: 1.25; color: var(--primary); }
+        .navigation-insert-dialog-wrapper li:focus-within { border: 2px solid var(--primary); padding: calc(0.5rem - 1px) calc(0.75rem - 1px); }
     </style>
 {% endblock %}
 
-{%- macro renderItemEntry(item, parentItem = null) -%}
+{%- macro renderItemEntry(linkHydrator, item, parentItem = null) -%}
     <div class="item">
         <div class="info">
-            <div class="label" contenteditable>{{ item.get("label")|default("Untitled") }}</div>
-            <div class="link-wrapper">
-                {{ item.get("link")|default("#") }}
-            </div>
             <div class="handle">
                 <i class="fas fa-arrows-alt"></i>
             </div>
+            <div class="label" data-content-title="{{ linkHydrator.getContentTitle(item.get("link")) }}" contenteditable>{{ item.get("label")|default("") }}</div>
+            <div class="link-wrapper">
+                <div class="title">{{ linkHydrator.getContentTitle(item.get("link"))|default("-") }}</div>
+                <div class="url">{{ item.get("link")|default("#") }}</div>
+            </div>
+            <button type="button" class="delete">
+                <i class="fas fa-trash"></i>
+            </button>
             <input type="hidden" name="label" value="{{ item.get("label") }}">
             <input type="hidden" name="link" value="{{ item.get("link") }}">
             <input type="hidden" name="class" value="{{ item.get("class") }}">
         </div>
         <div class="menu submenu">
             {%- for child in item.get("submenu")|default([]) -%}
-                {{ _self.renderItemEntry(child, item) }}
+                {{ _self.renderItemEntry(linkHydrator, child, item) }}
             {%- endfor -%}
         </div>
     </div>
@@ -58,10 +80,10 @@
 
 {% block main %}
     <div>
-        <form id="navigation-edit-form">
+        <form id="navigation-edit-form" data-action="{{ url('bolt_eckinox_navigation_save') }}" data-menu-name="{{ menuName }}">
             <div class="menu">
                 {% for item in config.get("menu/" ~ menuName) %}
-                    {{ _self.renderItemEntry(item) }}
+                    {{ _self.renderItemEntry(linkHydrator, item) }}
                 {% endfor %}
             </div>
         </form>
@@ -131,6 +153,21 @@
 
             input.value = e.target.textContent;
         });
+
+
+        document.querySelector("#navigation-edit-form").addEventListener("click", function(e) {
+            if (!e.target.matches('.delete, .delete *')) {
+                return;
+            }
+
+            const item = e.target.closest('.item');
+            const labelEl = item.querySelector('.label');
+            const label = labelEl.textContent || labelEl.getAttribute('data-content-title');
+
+            if (confirm(`Are you sure you want to remove the "${label}" link from your navigation?`)) {
+                item.remove();
+            }
+        });
     </script>
     <script>
         function buildNavigationConfigFromDom()
@@ -177,12 +214,191 @@
             Primary Actions
         </div>
         <div class="card-body">
-            <div class="record-actions ">
-                <a href="{{ path('bolt_eckinox_navigation_list') }}" data-patience="virtue" name="save" class="btn btn-success">
+            <div class="record-actions">
+                <button type="button" name="add" class="btn btn-primary" id="add-navigation-item">
+                    <i class="fas fa-fw fa-plus mr-2"></i>
+                    Add an element
+                </button>
+                <button type="submit" data-patience="virtue" name="save" class="btn btn-success" id="save-navigation">
                     <i class="fas fa-fw fa-save mr-2"></i>
                     Save changes
-                </a>
+                </button>
             </div>
         </div>
     </div>
+    <script>
+        document.querySelector("button#save-navigation").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const saveButton = this;
+            const menuConfig = buildNavigationConfigFromDom();
+            const form = document.querySelector("#navigation-edit-form");
+            const menuName = form.getAttribute("data-menu-name");
+            const saveUrl = form.getAttribute("data-action");
+            const formData = new FormData();
+            let toastType = "success";
+            let toastMessage = "";
+
+            formData.append("name", menuName);
+            formData.append("encodedConfig", JSON.stringify(menuConfig));
+
+            fetch(saveUrl, {
+                method: "post",
+                body: new URLSearchParams(formData)
+            }).then(response => {
+                return response.json();
+            }).then(response => {
+                if (!response.success) {
+                    toastType = "error";
+                }
+
+                toastMessage = response.msg;
+            }).catch(error => {
+                alert("An error has occured: " + error);
+            }).finally(() => {
+                saveButton.disabled = false;
+                saveButton.querySelector('.fa-spin')?.classList?.remove?.('fa-spin');
+
+                const toast = document.createElement("div");
+                toast.classList = "toast";
+                toast.setAttribute("role", "alert");
+                toast.setAttribute("aria-live", "assertive");
+                toast.setAttribute("aria-atomic", "true");
+                toast.setAttribute("data-delay", "6000");
+                toast.innerHTML = `
+                    <div class="alert-${toastType} toast-header">
+                        <strong class="mr-auto">{{ 'flash_messages.notification'|trans }}</strong>
+                        <button class="ml-2 mb-1 close" aria-label="Close" data-dismiss="toast" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">${toastMessage}</div>
+                `;
+                document.querySelector(".admin__notifications").appendChild(toast);
+                $(toast).toast("show");
+            });
+        });
+    </script>
+    <script>
+        document.querySelector("button#add-navigation-item").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            document.body.insertAdjacentHTML("beforeend", `
+                <div class="navigation-insert-dialog-wrapper">
+                    <div class="dialog">
+                        <label class="dialog-title">
+                            Select a page to add
+                        </label>
+                        <input type="text" name="query" placeholder="Search or enter an URL" autocomplete="off">
+                        <ol>
+                        </ol>
+                    </div>
+                </div>
+            `);
+
+            const mainMenuElement = document.querySelector("#navigation-edit-form .menu");
+            const modalWrapper = document.querySelector(".navigation-insert-dialog-wrapper");
+            const modal = document.querySelector(".navigation-insert-dialog-wrapper");
+            const input = modal.querySelector("input");
+            const list = modal.querySelector("ol");
+
+            input.focus();
+
+            // Close modal when clicking on wrapper
+            document.addEventListener("click", function(e) {
+                if (e.target == modalWrapper) {
+                    modalWrapper.remove();
+                }
+            });
+
+            // Select link
+            list.addEventListener("click", function(e) {
+                if (!e.target.matches("li a")) {
+                    return;
+                }
+
+                e.preventDefault();
+
+                const item = e.target.closest("li");
+                const pageTitle = item.getAttribute("data-title");
+                const pageUrl = item.getAttribute("data-url");
+                const navigationItemHtml = `
+                    <div class="item">
+                            <div class="info">
+                                <div class="handle">
+                                    <i class="fas fa-arrows-alt"></i>
+                                </div>
+                                <div class="label" data-content-title="${pageTitle ? pageTitle : "-"}" contenteditable></div>
+                                <div class="link-wrapper">
+                                    <div class="title">${pageTitle ? pageTitle : "-"}</div>
+                                    <div class="url">${pageUrl}</div>
+                                </div>
+                                <button type="button" class="delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <input type="hidden" name="label" value="${pageTitle ? pageTitle : ""}">
+                                <input type="hidden" name="link" value="${pageUrl}">
+                                <input type="hidden" name="class" value="">
+                            </div>
+                            <div class="menu submenu"></div>
+                        </div>
+                `;
+
+                mainMenuElement.insertAdjacentHTML("beforeend", navigationItemHtml);
+                modalWrapper.remove();
+            });
+
+            // Update list when search query changes
+            let searchController = new AbortController();
+            let searchControllerSignal = searchController.signal;
+
+            input.addEventListener("input", function() {
+                searchController.abort();
+
+                searchController = new AbortController();
+                searchControllerSignal = searchController.signal;
+
+                const query = input.value.trim();
+                const formData = new FormData();
+                formData.append("query", query);
+
+                fetch("{{ path('bolt_eckinox_navigation_search') }}", {
+                    method: "post",
+                    body: new URLSearchParams(formData),
+                    signal: searchControllerSignal
+                }).then(response => {
+                    return response.json();
+                }).then(response => {
+                    let resultsHtml = "";
+
+                    for (const record of response.records) {
+                        resultsHtml += `
+                            <li data-url="${record.url}" data-title="${record.title}">
+                                <div class="title">${record.title}</div>
+                                <div class="url">${record.typeLabel ? record.typeLabel + " - " : ""}${record.absoluteUrl}</div>
+                                <a href="#">Add to the navigation</a>
+                            </li>
+                        `;
+                    }
+
+                    if (/^https?:\/\/.+/.test(query)) {
+                        const temporaryTitle = query.replace(/^https?:\/\/(?:www.?\.)?(.+?)(?:\/.*)?$/, "$1");
+                        resultsHtml += `
+                            <li data-url="${query}" data-title="${temporaryTitle}">
+                                <div class="title">${temporaryTitle}</div>
+                                <div class="url">${query}</div>
+                                <a href="#">Add to the navigation</a>
+                            </li>
+                        `;
+                    }
+
+                    if (!resultsHtml) {
+                        resultsHtml += `<li class="empty-state">Sorry, we couldn't find any content for this search query.</li>`;
+                    }
+
+                    list.innerHTML = resultsHtml;
+                });
+            });
+        });
+    </script>
 {% endblock %}

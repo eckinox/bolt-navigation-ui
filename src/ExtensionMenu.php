@@ -27,10 +27,10 @@ class ExtensionMenu implements ExtensionBackendMenuInterface
         ]);
 
         // This adds the link
-        $menu->addChild('Manage your navigations', [
+        $menu->addChild('Manage navigations', [
            'uri' => $this->urlGenerator->generate('bolt_eckinox_navigation_list'),
             'extras' => [
-                'icon' => 'fa-user-circle'
+                'icon' => 'fa-bars'
             ]
         ]);
     }

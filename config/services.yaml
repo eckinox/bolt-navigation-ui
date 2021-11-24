@@ -1,3 +1,7 @@
 services:
     Eckinox\BoltNavigationUI\ExtensionMenu:
         class: Eckinox\BoltNavigationUI\ExtensionMenu
+
+    Eckinox\BoltNavigationUI\Utils\Search\NavigationContentSearch:        
+        arguments:
+            $defaultLocale: '%locale%'

@@ -9,7 +9,10 @@
             "email": "contact@emileperron.com"
         }
     ],
-    "require": {},
+    "require": {
+        "symfony/yaml": "^3.4 || ^4.4 || ^5.1 || ^6.0",
+        "php": ">=7.4"
+    },
     "autoload": {
         "psr-4": {
             "Eckinox\\BoltNavigationUI\\": "src/"
