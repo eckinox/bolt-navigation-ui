@@ -10,8 +10,9 @@
         }
     ],
     "require": {
+        "php": ">=7.2.9",
         "symfony/yaml": "^3.4 || ^4.4 || ^5.1 || ^6.0",
-        "php": "^7.2.9 || ^8.0"
+        "symfony/string": "*"
     },
     "autoload": {
         "psr-4": {
