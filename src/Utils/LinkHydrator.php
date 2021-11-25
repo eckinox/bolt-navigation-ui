@@ -26,7 +26,7 @@ class LinkHydrator
     public function __construct(
         Config $config,
         ContentRepository $contentRepository,
-        ContentExtension $contentExtension,
+        ContentExtension $contentExtension
     ) {
         $this->config = $config;
         $this->contentRepository = $contentRepository;
