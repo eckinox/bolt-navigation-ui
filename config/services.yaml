@@ -7,3 +7,8 @@ services:
     Eckinox\BoltNavigationUI\Utils\Search\NavigationContentSearch:        
         arguments:
             $defaultLocale: '%locale%'
+
+framework:
+    translator:
+        paths:
+            - '%kernel.project_dir%/vendor/eckinox/bolt-navigation-ui/translations'

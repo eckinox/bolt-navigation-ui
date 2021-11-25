@@ -1,4 +1,0 @@
-framework:
-    translator:
-        paths:
-            - '%kernel.project_dir%/vendor/eckinox/bolt-navigation-ui/translations'
