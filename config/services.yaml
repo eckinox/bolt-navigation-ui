@@ -1,6 +1,8 @@
 services:
     Eckinox\BoltNavigationUI\ExtensionMenu:
         class: Eckinox\BoltNavigationUI\ExtensionMenu
+        arguments: [ '@Symfony\Component\Routing\Generator\UrlGeneratorInterface', '@Symfony\Contracts\Translation\TranslatorInterface' ]
+        tags: [ 'bolt.extension_backend_menu' ]
 
     Eckinox\BoltNavigationUI\Utils\Search\NavigationContentSearch:        
         arguments:
