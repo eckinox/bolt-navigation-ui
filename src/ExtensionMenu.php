@@ -9,8 +9,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExtensionMenu implements ExtensionBackendMenuInterface
 {
-    private UrlGeneratorInterface $urlGenerator;
-    private TranslatorInterface $translator;
+    /** @var UrlGeneratorInterface */
+    private $urlGenerator;
+
+    /** @var TranslatorInterface */
+    private $translator;
 
     public function __construct(UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator)
     {

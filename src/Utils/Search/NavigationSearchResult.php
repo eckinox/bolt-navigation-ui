@@ -5,11 +5,20 @@ namespace Eckinox\BoltNavigationUI\Utils\Search;
 
 class NavigationSearchResult
 {
-    public string $title;
-    public string $type;
-    public string $typeLabel;
-    public string $url;
-    public string $absoluteUrl;
+    /** @var string */
+    public $title;
+
+    /** @var string */
+    public $type;
+
+    /** @var string */
+    public $typeLabel;
+
+    /** @var string */
+    public $url;
+
+    /** @var string */
+    public $absoluteUrl;
 
     public function __construct(string $title, string $type, string $typeLabel, string $url, string $absoluteUrl)
     {

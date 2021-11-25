@@ -13,13 +13,26 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class NavigationContentSearch extends ExtensionController
 {
-    private Config $config;
-    private ContentRepository $contentRepository;
-    private ContentExtension $contentExtension;
-    private RouterInterface $router;
-    private SluggerInterface $slugger;
-    private string $defaultLocale;
-    private Collection $contentTypes;
+    /** @var Config */
+    private $config;
+    
+    /** @var ContentRepository */
+    private $contentRepository;
+    
+    /** @var ContentExtension */
+    private $contentExtension;
+    
+    /** @var RouterInterface */
+    private $router;
+    
+    /** @var SluggerInterface */
+    private $slugger;
+    
+    /** @var string */
+    private $defaultLocale;
+    
+    /** @var Collection */
+    private $contentTypes;
 
     public function __construct(Config $config, ContentRepository $contentRepository, ContentExtension $contentExtension, RouterInterface $router, SluggerInterface $slugger, string $defaultLocale)
     {
