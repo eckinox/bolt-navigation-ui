@@ -135,7 +135,7 @@ class NavigationContentSearch extends ExtensionController
         foreach ($this->contentTypes as $contentType) {
             $matchesQuery = $this->checkIfContentMatchesQuery([$contentType["name"]], $query);
 
-            if (!$matchesQuery || $contentType["viewless_listing"]) {
+            if (!$matchesQuery || ($contentType["viewless_listing"] ?? false)) {
                 continue;
             }
 
@@ -208,19 +208,21 @@ class NavigationContentSearch extends ExtensionController
             $linkUrl = $locale . "/" . $content->getContentTypeSingularSlug() . "/" . $content->getSlug();
             $absoluteUrl = $this->router->generate("record_locale", [
                 "_locale" => $locale,
-                "slugOrId" => $content->getSlug(),
+                "slugOrId" => $content->getSlug() ?: $content->getId(),
                 "contentTypeSlug" => $content->getContentTypeSingularSlug(),
             ], RouterInterface::ABSOLUTE_URL);
         } else {
             $linkUrl = $content->getContentType() . "/" . $content->getId();
             $absoluteUrl = $this->router->generate("record", [
-                "slugOrId" => $content->getSlug(),
+                "slugOrId" => $content->getSlug() ?: $content->getId(),
                 "contentTypeSlug" => $content->getContentTypeSingularSlug(),
             ], RouterInterface::ABSOLUTE_URL);
         }
 
+        $title = $this->contentExtension->getTitle($content, $locale ?: "");
+
         return new NavigationSearchResult(
-            $this->contentExtension->getTitle($content, $locale ?: ""),
+            $title ?: $content->getContentTypeName(),
             $content->getContentType(),
             $content->getContentTypeSingularName(),
             $linkUrl,
