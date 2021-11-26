@@ -56,6 +56,8 @@
 {% endblock %}
 
 {%- macro renderItemEntry(linkHydrator, item, parentItem = null) -%}
+    {% set boltConfigKeys = ["title", "label", "link", "class", "submenu", "uri"] %}
+
     <div class="item">
         <div class="info">
             <div class="handle">
@@ -72,6 +74,7 @@
             <input type="hidden" name="label" value="{{ item.get("label") }}">
             <input type="hidden" name="link" value="{{ item.get("link") }}">
             <input type="hidden" name="class" value="{{ item.get("class") }}">
+            <input type="hidden" name="custom_config" value="{{ item.toArray()|filter((v, k) => k not in boltConfigKeys)|json_encode }}">
         </div>
         <div class="menu submenu">
             {%- for child in item.get("submenu")|default([]) -%}
@@ -196,6 +199,16 @@
 
                 if (!itemConfig.class.length) {
                     delete itemConfig.class;
+                }
+
+                // Add any custom configurations the item originally had
+                const jsonCustomConfig = item.querySelector('input[name="custom_config"]').value;
+                const customConfig = JSON.parse(jsonCustomConfig);
+
+                if (customConfig && !Array.isArray(customConfig)) {
+                    for (const key in customConfig) {
+                        itemConfig[key] = customConfig[key];
+                    }
                 }
 
                 return itemConfig;
