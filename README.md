@@ -10,7 +10,7 @@ It allows end-users to update menus intuitively via a drag-and-drop interface, a
 
 ## Installation
 
-To get started, first make sure you're running PHP 7.4 or higher, as well as Bolt 4 or higher.
+To get started, first make sure you're running PHP 7.2.9 or higher, as well as Bolt 5 or higher.
 
 Then, in your project, install the extension via Composer:
 
