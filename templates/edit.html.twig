@@ -41,6 +41,9 @@
         .navigation-insert-dialog-wrapper { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .35); z-index: 100; }
         .navigation-insert-dialog-wrapper .dialog { width: 600px; max-width: 90%; padding: 2rem 2.25rem; background-color: var(--background); border-radius: 2px; box-shadow: 0 1rem 1rem rgb(0 0 0 / 5%); }
         .navigation-insert-dialog-wrapper .dialog-title { display: block; font-size: 1.5rem; }
+        .navigation-insert-dialog-wrapper .input-wrapper { position: relative; }
+        .navigation-insert-dialog-wrapper .input-wrapper i { display: none; font-size: 1.5rem; line-height: 1; color: var(--shade); position: absolute; top: .5rem; right: .25rem; }
+        .navigation-insert-dialog-wrapper input.pending + i { display: block; }
         .navigation-insert-dialog-wrapper input { display: block; width: 100%; padding: .5rem .75rem; border: 1px solid var(--shade-light); }
         .navigation-insert-dialog-wrapper ol { height: calc(70vh - 10rem); padding: 0; margin-top: 1rem; list-style: none; overflow: auto; }
         .navigation-insert-dialog-wrapper li { padding: .5rem .75rem; margin-bottom: 1rem; background-color: white; border: 1px solid var(--shade-light); position: relative; }
@@ -290,7 +293,10 @@
                         <label class="dialog-title">
                             {% trans %}select_page{% endtrans %}
                         </label>
-                        <input type="text" name="query" placeholder="{% trans %}search_page_placeholder{% endtrans %}" autocomplete="off">
+                        <div class="input-wrapper pending">
+                            <input type="text" name="query" placeholder="{% trans %}search_page_placeholder{% endtrans %}" autocomplete="off">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
                         <ol>
                         </ol>
                     </div>
@@ -359,9 +365,9 @@
 
             input.addEventListener("input", function() {
                 searchController.abort();
-
                 searchController = new AbortController();
                 searchControllerSignal = searchController.signal;
+                input.classList.add("pending");
 
                 const query = input.value.trim();
                 const formData = new FormData();
@@ -391,6 +397,7 @@
                     }
 
                     list.innerHTML = resultsHtml;
+                    input.classList.remove("pending");
                 });
             });
         });
