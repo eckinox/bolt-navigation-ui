@@ -399,11 +399,16 @@
                     list.innerHTML = resultsHtml;
                     input.classList.remove("pending");
                 }).catch((err) => {
+                    if (err.name == "AbortError") {
+                        return;
+                    }
+
                     list.innerHTML = `
                         <li class="error">
                             {% trans %}page_search_request_failed{% endtrans %}
                         </li>
                     `;
+                    input.classList.remove("pending");
                 });
             });
         });
