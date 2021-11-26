@@ -103,6 +103,12 @@
         <target>Sorry, we couldn't find any page matching your search query.</target>
       </segment>
     </unit>
+    <unit id="Lvzy2gK" name="page_search_request_failed">
+      <segment>
+        <source>page_search_request_failed</source>
+        <target>An error has occured while searching for your desired page. Please contact your website's developer for more information.</target>
+      </segment>
+    </unit>
     <unit id="J67S.g8" name="remove_item_confirmation">
       <segment>
         <source>remove_item_confirmation</source>

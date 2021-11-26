@@ -103,6 +103,12 @@
         <target>Désolé, aucune page ne correpond à votre recherche.</target>
       </segment>
     </unit>
+    <unit id="Lvzy2gK" name="page_search_request_failed">
+      <segment>
+        <source>page_search_request_failed</source>
+        <target>Une erreur s'est produite lors de la recherche de page. Vous pouvez contacter le ou la développeur(e) de votre site web pour plus d'informations.</target>
+      </segment>
+    </unit>
     <unit id="J67S.g8" name="remove_item_confirmation">
       <segment>
         <source>remove_item_confirmation</source>

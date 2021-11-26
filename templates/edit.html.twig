@@ -398,6 +398,12 @@
 
                     list.innerHTML = resultsHtml;
                     input.classList.remove("pending");
+                }).catch((err) => {
+                    list.innerHTML = `
+                        <li class="error">
+                            {% trans %}page_search_request_failed{% endtrans %}
+                        </li>
+                    `;
                 });
             });
         });
