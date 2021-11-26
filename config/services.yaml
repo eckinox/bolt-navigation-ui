@@ -6,7 +6,12 @@ services:
 
     Eckinox\BoltNavigationUI\Utils\Search\NavigationContentSearch:        
         arguments:
-            $defaultLocale: '%locale%'
+            - '@Bolt\Configuration\Config'
+            - '@Bolt\Repository\ContentRepository'
+            - '@Bolt\Twig\ContentExtension'
+            - '@Symfony\Component\Routing\RouterInterface'
+            - '@Symfony\Component\String\Slugger\SluggerInterface'
+            - '%locale%'
 
 framework:
     translator:
