@@ -58,7 +58,7 @@
     <unit id="_XWmxCK" name="save_changes">
       <segment>
         <source>save_changes</source>
-        <target>Enregistrer les changements</target>
+        <target>Enregistrer</target>
       </segment>
     </unit>
     <unit id="zf8zfYA" name="select_page">
