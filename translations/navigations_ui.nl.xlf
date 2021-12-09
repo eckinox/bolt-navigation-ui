@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="nl" trgLang="nl">
+  <file id="navigations_ui.nl">
+    <unit id="welcIyf" name="extension_name">
+      <segment>
+        <source>extension_name</source>
+        <target>Extensies</target>
+      </segment>
+    </unit>
+    <unit id="jaS5E8v" name="manage_navigations">
+      <segment>
+        <source>manage_navigations</source>
+        <target>Navigatie beheren</target>
+      </segment>
+    </unit>
+    <unit id="Ob0Fy2E" name="site_management">
+      <segment>
+        <source>site_management</source>
+        <target>Website beheren</target>
+      </segment>
+    </unit>
+    <unit id="oDVttCb" name="menu_name">
+      <segment>
+        <source>menu_name</source>
+        <target>Menu naam</target>
+      </segment>
+    </unit>
+    <unit id="IMMIPq." name="menu_unique_name">
+      <segment>
+        <source>menu_unique_name</source>
+        <target>Unieke naam</target>
+      </segment>
+    </unit>
+    <unit id="Kw3N1AA" name="actions">
+      <segment>
+        <source>actions</source>
+        <target>Acties</target>
+      </segment>
+    </unit>
+    <unit id="SR7tswX" name="edit_menu">
+      <segment>
+        <source>edit_menu</source>
+        <target>Bewerken</target>
+      </segment>
+    </unit>
+    <unit id="d_YxKjJ" name="primary_actions">
+      <segment>
+        <source>primary_actions</source>
+        <target>Acties</target>
+      </segment>
+    </unit>
+    <unit id="j2fjkOO" name="add_item">
+      <segment>
+        <source>add_item</source>
+        <target>Toevoegen</target>
+      </segment>
+    </unit>
+    <unit id="_XWmxCK" name="save_changes">
+      <segment>
+        <source>save_changes</source>
+        <target>Opslaan</target>
+      </segment>
+    </unit>
+    <unit id="knJ0DzC" name="flash_messages.live_notification">
+      <segment>
+        <source>flash_messages.live_notification</source>
+        <target>Notificatie</target>
+      </segment>
+    </unit>
+    <unit id="zf8zfYA" name="select_page">
+      <segment>
+        <source>select_page</source>
+        <target>Pagina</target>
+      </segment>
+    </unit>
+    <unit id="9WyX_Jx" name="search_page_placeholder">
+      <segment>
+        <source>search_page_placeholder</source>
+        <target>Zoek een pagina</target>
+      </segment>
+    </unit>
+    <unit id="s3Endck" name="add_to_navigation">
+      <segment>
+        <source>add_to_navigation</source>
+        <target>Toevoegen aan navigatie</target>
+      </segment>
+    </unit>
+    <unit id="6veyBgU" name="page_search_empty_state">
+      <segment>
+        <source>page_search_empty_state</source>
+        <target>-- Geen --</target>
+      </segment>
+    </unit>
+    <unit id="e2BcRY2" name="page_search_request_failed">
+      <segment>
+        <source>page_search_request_failed</source>
+        <target>Geen resultaten</target>
+      </segment>
+    </unit>
+    <unit id="kDf0eLI" name="editing_navigation">
+      <segment>
+        <source>editing_navigation</source>
+        <target>Navigatie bewerken</target>
+      </segment>
+    </unit>
+    <unit id=".kdojxv" name="navigations">
+      <segment>
+        <source>navigations</source>
+        <target>Navigaties</target>
+      </segment>
+    </unit>
+    <unit id="J67S.g8" name="remove_item_confirmation">
+      <segment>
+        <source>remove_item_confirmation</source>
+        <target>Weet je zeker dat je het wil verwijderen?</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
